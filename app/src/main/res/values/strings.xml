@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Barcode Scanning</string>
+    <string name="barcode_scanner">Barcode Scanner</string>
+    <string name="permission_not_granted">You need to grant the permission to use the device\'s camera</string>
+</resources>
