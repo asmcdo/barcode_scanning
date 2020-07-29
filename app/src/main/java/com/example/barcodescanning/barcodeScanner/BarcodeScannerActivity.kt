@@ -8,7 +8,6 @@ import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
-import androidx.camera.core.impl.ImageAnalysisConfig
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.barcodescanning.R
@@ -21,7 +20,6 @@ class BarcodeScannerActivity() : AppCompatActivity() {
     private var camera: Camera? = null
 
     private lateinit var cameraExecutor: ExecutorService
-
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)

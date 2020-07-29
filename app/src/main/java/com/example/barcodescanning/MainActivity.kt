@@ -1,20 +1,27 @@
 package com.example.barcodescanning
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.barcodescanning.barcodeScanner.BarcodeScannerActivity
-import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            //TODO: Handle the Intent
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -50,8 +57,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openCameraActivity() {
-        val intent =Intent(this, BarcodeScannerActivity::class.java)
-        startActivity(intent)
+        val intent = Intent(this, BarcodeScannerActivity::class.java)
+        startForResult.launch(intent)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
