@@ -8,13 +8,14 @@ import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
+import androidx.camera.core.impl.ImageAnalysisConfig
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.barcodescanning.R
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import java.util.concurrent.ExecutorService
 
-class BarcodeScannerActivity(var onBarcodeResult: (a: String) -> Unit) : AppCompatActivity() {
+class BarcodeScannerActivity() : AppCompatActivity() {
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private var camera: Camera? = null
@@ -36,13 +37,23 @@ class BarcodeScannerActivity(var onBarcodeResult: (a: String) -> Unit) : AppComp
 
             preview = Preview.Builder().build()
 
+            imageAnalyzer = ImageAnalysis.Builder().build()
+                .also {
+                    it.setAnalyzer(
+                        cameraExecutor, BarcodeScannerAnalyzer { barcode ->
+                            println(barcode.rawValue)
+                        }
+                    )
+                }
+
             val cameraSelector =
                 CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
 
             try {
                 cameraProvider.unbindAll()
 
-                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+                camera =
+                    cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
 
                 preview?.setSurfaceProvider(scannerPreview.createSurfaceProvider())
 

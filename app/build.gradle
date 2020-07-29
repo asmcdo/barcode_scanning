@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    def activity_version = "1.2.0-alpha02"
+    def activity_version = "1.2.0-alpha07"
     implementation "androidx.activity:activity-ktx:$activity_version"
 
     def camerax_version = "1.0.0-beta07"
@@ -41,6 +41,8 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha14"
+
+    implementation 'com.google.mlkit:barcode-scanning:16.0.2'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

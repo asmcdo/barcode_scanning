@@ -10,6 +10,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.barcodescanning.barcodeScanner.BarcodeScannerActivity
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -49,7 +50,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openCameraActivity() {
-        //TODO: open BarcodeScanneractivity
+        val intent =Intent(this, BarcodeScannerActivity::class.java)
+        startActivity(intent)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
