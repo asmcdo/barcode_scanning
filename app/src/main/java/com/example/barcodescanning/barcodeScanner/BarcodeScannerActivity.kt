@@ -3,6 +3,7 @@ package com.example.barcodescanning.barcodeScanner
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -13,16 +14,17 @@ import androidx.core.content.ContextCompat
 import com.example.barcodescanning.R
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-class BarcodeScannerActivity() : AppCompatActivity() {
+class BarcodeScannerActivity : AppCompatActivity() {
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private var camera: Camera? = null
 
     private lateinit var cameraExecutor: ExecutorService
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_barcode_scanner)
         startCamera()
     }
@@ -35,12 +37,24 @@ class BarcodeScannerActivity() : AppCompatActivity() {
 
             preview = Preview.Builder().build()
 
+            cameraExecutor = Executors.newSingleThreadExecutor()
+
             imageAnalyzer = ImageAnalysis.Builder().build()
                 .also {
                     it.setAnalyzer(
-                        cameraExecutor, BarcodeScannerAnalyzer { barcode ->
-                            println(barcode.rawValue)
-                        }
+                        cameraExecutor, BarcodeScannerAnalyzer(
+                            onSuccessListener = { barcode ->
+                                println(barcode.rawValue)
+                            },
+                            onFailureListener = { exception ->
+                                Toast.makeText(
+                                    this@BarcodeScannerActivity,
+                                    exception.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                finish()
+                            }
+                        )
                     )
                 }
 

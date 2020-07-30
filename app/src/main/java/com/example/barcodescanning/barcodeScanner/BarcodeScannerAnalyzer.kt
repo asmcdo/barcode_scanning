@@ -9,8 +9,12 @@ import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import java.lang.Exception
 
-class BarcodeScannerAnalyzer(private val onSuccessListener: (Barcode) -> Unit) : ImageAnalysis.Analyzer {
+class BarcodeScannerAnalyzer(
+    private val onSuccessListener: (Barcode) -> Unit,
+    private val onFailureListener: (Exception) -> Unit
+) : ImageAnalysis.Analyzer {
     @SuppressLint("UnsafeExperimentalUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         val options = BarcodeScannerOptions.Builder()
@@ -25,10 +29,12 @@ class BarcodeScannerAnalyzer(private val onSuccessListener: (Barcode) -> Unit) :
 
             scanner.process(image)
                 .addOnSuccessListener { barcodeList ->
-                    onSuccessListener(barcodeList.first())
+                    if (barcodeList.isNotEmpty()) {
+                        onSuccessListener(barcodeList.first())
+                    }
                 }
                 .addOnFailureListener { exception ->
-                    throw(exception)
+                    onFailureListener(exception)
                 }
                 .addOnCompleteListener {
                     imageProxy.close()
