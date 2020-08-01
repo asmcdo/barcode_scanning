@@ -12,13 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.barcodescanning.barcodeScanner.BarcodeScannerActivity
+import com.example.barcodescanning.result.ResultFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            //TODO: Handle the Intent
+            ResultFragment.show(supportFragmentManager, result.data?.getStringExtra(BARCODE_INTENT))
         }
     }
 
@@ -70,5 +70,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
+        private const val BARCODE_INTENT = "barcode_intent"
     }
 }

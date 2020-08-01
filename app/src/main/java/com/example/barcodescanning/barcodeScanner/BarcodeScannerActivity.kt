@@ -1,5 +1,8 @@
 package com.example.barcodescanning.barcodeScanner
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -12,6 +15,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.barcodescanning.R
+import com.example.barcodescanning.result.ResultFragment
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -29,6 +33,11 @@ class BarcodeScannerActivity : AppCompatActivity() {
         startCamera()
     }
 
+    override fun onPostResume() {
+        super.onPostResume()
+        ResultFragment.dismiss(supportFragmentManager)
+    }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -44,7 +53,9 @@ class BarcodeScannerActivity : AppCompatActivity() {
                     it.setAnalyzer(
                         cameraExecutor, BarcodeScannerAnalyzer(
                             onSuccessListener = { barcode ->
-                                println(barcode.rawValue)
+                                val intent = Intent().putExtra(BARCODE_INTENT, barcode.rawValue)
+                                setResult(Activity.RESULT_OK, intent)
+                                finish()
                             },
                             onFailureListener = { exception ->
                                 Toast.makeText(
@@ -52,6 +63,7 @@ class BarcodeScannerActivity : AppCompatActivity() {
                                     exception.message,
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                setResult(Activity.RESULT_CANCELED)
                                 finish()
                             }
                         )
@@ -79,5 +91,6 @@ class BarcodeScannerActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "CameraX"
+        private const val BARCODE_INTENT = "barcode_intent"
     }
 }
